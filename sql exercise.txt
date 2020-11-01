@@ -1,0 +1,193 @@
+1. Provide a query only showing the Customers from Brazil.
+SELECT FirstName, LastName
+FROM customers
+WHERE Country = "Brazil";
+
+2. Provide a query showing the Invoices of customers who are from Brazil. The resultant table should
+show the customer’s full name, Invoice ID, Date of the invoice and billing country.
+SELECT c.Firstname, c.Lastname, i.Invoiceid, i.Invoicedate, i.BillingCountry
+FROM Customers AS c, Invoices AS i
+WHERE c.Country = "Brazil" AND c.Customerid = i.Customerid;
+
+3. Provide a query that shows the # of invoices per country. HINT: GROUP BY
+SELECT BillingCountry, COUNT(InvoiceId)
+FROM Invoices
+GROUP BY BillingCountry;
+
+4. Provide a query that shows all Invoices but includes the # of invoice line items.
+SELECT i.InvoiceId, COUNT(i1.InvoiceLineId) as "Number of invoice lines "
+FROM Invoices AS i
+JOIN Invoice_items AS i1
+ON i.InvoiceId = i1.InvoiceId
+GROUP BY i.InvoiceId;
+
+5. Provide a query that includes the purchased track name with each invoice line item.
+SELECT InvoiceLineId, t.name
+FROM Invoice_items i 
+JOIN Tracks t
+ON t.TrackId = i.TrackId
+ORDER BY t.TrackId;
+
+6. Looking at the InvoiceLine table, provide a query that COUNTs the number of line items for Invoice
+ID 37.
+SELECT COUNT(InvoiceLineId) as "Number Of Line Items"
+FROM Invoice_items
+WHERE InvoiceId = 37;
+
+7. Provide a query that shows the Invoice Total, Customer name, Country and Sale Agent name for all
+invoices and customers.
+SELECT e.Firstname AS "Employee Firstname", e.Lastname AS "Employee Lastname", c.Firstname AS "Customer Firstname", c.Lastname AS "Customer Lastname", c.Country, i.total AS "Invoice Total"
+FROM employees AS e
+JOIN customers AS c ON e.Employeeid = c.Supportrepid
+JOIN invoices AS i ON c.Customerid = i.Customerid
+
+8. Provide a query that includes the purchased track name AND artist name with each invoice line item.
+SELECT InvoiceLineId, t.name as "Song", ar.Name as "Artist"
+FROM Invoice_items i 
+JOIN Tracks t
+ON t.TrackId = i.TrackId
+JOIN Albums a 
+ON a.AlbumId = t.AlbumId
+JOIN Artists ar 
+ON ar.ArtistId = a.ArtistId
+ORDER BY t.TrackId;
+
+9. Looking at the InvoiceLine table, provide a query that COUNTs the number of line items for each
+Invoice.
+SELECT InvoiceId, COUNT(InvoiceLineId) as "Invoice Count"
+FROM Invoice_items
+GROUP BY InvoiceId;
+
+10. Provide a query showing Customers (just their full names, customer ID and country) who are not in
+the US.
+SELECT FirstName, LastName, CustomerId, Country
+FROM customers
+WHERE NOT Country = "USA";
+
+11. Provide a query that shows the total number of tracks in each playlist. The Playlist name should be
+included on the resultant table
+SELECT p.Name, COUNT(pt.TrackId) as "Number Of Tracks"
+FROM Playlists p
+JOIN Playlist_Track pt
+ON p.PlaylistId = pt.PlaylistId
+GROUP BY p.name;
+
+12. Provide a query that shows the count of customers assigned to each sales agent.
+SELECT e.Address, COUNT(c.customerid) AS "Count of customers"
+FROM employees AS e
+JOIN customers AS c 
+ON e.employeeid = c.supportrepid
+GROUP BY e.employeeid
+
+13. Provide a query that shows the invoices associated with each sales agent. The resultant table should
+include the Sales Agent’s full name.
+SELECT e.Firstname, e.Lastname, i.Invoiceid, i.Customerid, i.Invoicedate, i.Billingaddress, i.Billingcountry, i.Billingpostalcode, i.total
+FROM customers AS c, invoices AS i
+ON c.customerid = i.custome  rid
+JOIN employees AS e
+ON e.employeeid = c.supportrepid
+ORDER BY e.employeeid;
+
+14. Provide a query that shows total sales made by each sales agent.
+SELECT e.*, COUNT(i.Invoiceid) as "Total Sales"
+FROM employees as e
+JOIN customers as c on e.employeeid = c.supportrepid
+JOIN invoices as i on i.customerid = c.customerid
+GROUP BY e.employeeid
+
+15. Provide a query showing only the Employees who are Sales Agents.
+SELECT  FirstName, LastName 
+FROM employees
+WHERE Title = "Sales Support Agent";
+
+16. Provide a query that shows the total sales per country.
+SELECT BillingCountry, SUM(Total)
+FROM invoices
+GROUP BY BillingCountry;
+
+17. Provide a query that shows the top 3 best selling artists.
+SELECT a.Name, COUNT(i.TrackId) AS "Number Of Tickets"
+FROM artists AS a, invoice_items AS i, tracks AS t, albums AS al
+WHERE i.TrackId = t.TrackId
+AND t.AlbumId == al.AlbumId
+AND al.ArtistId == a.ArtistId
+Group By a.Name
+ORDER BY COUNT(i.TrackId) desc
+LIMIT 3;
+
+18. Provide a query that shows the top 5 most purchased songs.
+SELECT al.Title, COUNT(i.TrackId) AS "Number Of Tickets"
+FROM artists AS a, invoice_items AS i, tracks AS t, albums AS al
+WHERE i.TrackId = t.TrackId
+AND t.AlbumId == al.AlbumId
+AND al.ArtistId == a.ArtistId
+Group By al.Title
+ORDER BY COUNT(i.TrackId) desc
+LIMIT 5;
+
+19. Which sales agent made the most in sales in 2009?
+SELECT e.FirstName, e.LastName, SUM( i.Total)
+FROM employees AS e, invoices AS i, customers AS c 
+WHERE i.CustomerId = c.CustomerId
+AND c.SupportRepId = e.EmployeeId
+AND e.Title = "Sales Support Agent"
+AND i.InvoiceDate LIKE "2009%"
+GROUP BY e.FirstName
+order by SUM(i.Total) desc
+Limit 1;
+
+21. Provide a query that shows the most purchased track of 2013.
+SELECT t.Name, COUNT(il.TrackId) AS "Number of Tickets" 
+FROM tracks AS t, invoice_items AS il, invoices AS i 
+WHERE il.TrackId == t.TrackId
+AND il.InvoiceId == i.InvoiceId
+AND i.InvoiceDate LIKE "2013%"
+GROUP BY t.Name
+ORDER BY COUNT(il.TrackId) desc
+Limit 1;
+
+22. Which sales agent made the most in sales over all?
+SELECT e.FirstName, e.LastName
+FROM employees AS e
+JOIN customers AS c ON e.employeeid = c.supportrepid
+JOIN invoices as i on i.customerid = c.customerid
+group by e.employeeid
+ORDER BY sum(total) desc
+Limit 1;
+
+23. Which country’s customers spent the most?
+SELECT BillingCountry, SUM(Total)
+FROM invoices
+GROUP BY BillingCountry
+ORDER BY SUM(Total) desc
+LIMIT 1;
+
+24. Provide a query that shows the most purchased Media Type.
+SELECT m.Name AS "Media Type", COUNT(i.TrackId) as "Number of Tickets"
+FROM media_types AS m, invoice_items AS i, tracks AS t
+WHERE i.TrackId == t.TrackId
+AND t.MediaTypeId == m.MediaTypeId
+Group By m.Name
+Order By COUNT(i.TrackId) desc
+Limit 1;
+
+25. How many Invoices were there in 2009 and 2011?
+SELECT COUNT(invoiceid)
+FROM invoices 
+WHERE invoicedate BETWEEN datetime("2009-01-01") AND datetime("2011-12-31");
+
+26. What are the respective total sales for each of those years? (2009,2010,2011)”;
+SELECT SUBSTR(InvoiceDate,0,5) AS "Year", SUM(Total) AS "Total"
+FROM invoices
+WHERE InvoiceDate  LIKE "2009%" 
+OR InvoiceDate LIKE "2010%"
+OR InvoiceDate LIKE "2011%"
+GROUP BY SUBSTR(InvoiceDate,0,5);
+
+28. Provide a query that shows all the Tracks, but displays no IDs. The result should include the Album
+name, Media type and Genre
+SELECT t.name,a.title AS "Album name" , g.name AS "Genres", m.name AS "Media tyoe"
+FROM tracks AS t
+JOIN albums AS a ON a.albumid = t.albumid
+JOIN genres AS g ON g.genreid = t.genreid
+JOIN media_types AS m ON m.mediatypeid = t.mediatypeid

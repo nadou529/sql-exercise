@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/DELL/Desktop/chinook.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="3958"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,6:mainalbums"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="albums" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="64"/><column index="2" value="300"/><column index="3" value="72"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">SELECT FirstName, LastName
+FROM customers
+WHERE Country = &quot;Brazil&quot;;</sql><sql name="SQL 2">SELECT c.Firstname, c.Lastname, i.Invoiceid, i.Invoicedate, i.BillingCountry
+FROM Customers AS c, Invoices AS i
+WHERE c.Country = &quot;Brazil&quot; AND c.Customerid = i.Customerid;</sql><sql name="SQL 3">SELECT BillingCountry, COUNT(InvoiceId)
+FROM Invoices
+GROUP BY BillingCountry;</sql><sql name="SQL 4">SELECT i.InvoiceId, COUNT(i1.InvoiceLineId) as &quot;Number of invoice lines &quot;
+FROM Invoices AS i
+JOIN Invoice_items AS i1
+ON i.InvoiceId = i1.InvoiceId
+GROUP BY i.InvoiceId;</sql><sql name="SQL 5">SELECT InvoiceLineId, t.name
+FROM Invoice_items i 
+JOIN Tracks t
+ON t.TrackId = i.TrackId
+ORDER BY t.TrackId;</sql><sql name="SQL 6">SELECT COUNT(InvoiceLineId) as &quot;Number Of Line Items&quot;
+FROM Invoice_items
+WHERE InvoiceId = 37;</sql><sql name="SQL 7">SELECT e.Firstname AS &quot;Employee Firstname&quot;, e.Lastname AS &quot;Employee Lastname&quot;, c.Firstname AS &quot;Customer Firstname&quot;, c.Lastname AS &quot;Customer Lastname&quot;, c.Country, i.total AS &quot;Invoice Total&quot;
+FROM employees AS e
+	JOIN customers AS c ON e.Employeeid = c.Supportrepid
+	JOIN invoices AS i ON c.Customerid = i.Customerid</sql><sql name="SQL 8">SELECT InvoiceLineId, t.name as &quot;Song&quot;, ar.Name as &quot;Artist&quot;
+  FROM Invoice_items i 
+  JOIN Tracks t
+  ON t.TrackId = i.TrackId
+  JOIN Albums a 
+  ON a.AlbumId = t.AlbumId
+  JOIN Artists ar 
+  ON ar.ArtistId = a.ArtistId
+  ORDER BY t.TrackId;</sql><sql name="SQL 9">SELECT InvoiceId, COUNT(InvoiceLineId) as &quot;Invoice Count&quot;
+FROM Invoice_items
+GROUP BY InvoiceId;</sql><sql name="SQL 10">SELECT FirstName, LastName, CustomerId, Country
+FROM customers
+WHERE NOT Country = &quot;USA&quot;;</sql><sql name="SQL 11">SELECT p.Name, COUNT(pt.TrackId) as &quot;Number Of Tracks&quot;
+FROM Playlists p
+JOIN Playlist_Track pt
+ON p.PlaylistId = pt.PlaylistId
+GROUP BY p.name;</sql><sql name="SQL 12">SELECT e.Address, COUNT(c.customerid) AS &quot;Count of customers&quot;
+FROM employees AS e
+JOIN customers AS c 
+ON e.employeeid = c.supportrepid
+GROUP BY e.employeeid</sql><sql name="SQL 13">SELECT e.Firstname, e.Lastname, i.Invoiceid, i.Customerid, i.Invoicedate, i.Billingaddress, i.Billingcountry, i.Billingpostalcode, i.total
+FROM customers AS c, invoices AS i
+ON c.customerid = i.custome  rid
+JOIN employees AS e
+ON e.employeeid = c.supportrepid
+ORDER BY e.employeeid;</sql><sql name="SQL 14">SELECT e.*, COUNT(i.Invoiceid) as &quot;Total Sales&quot;
+FROM employees as e
+JOIN customers as c on e.employeeid = c.supportrepid
+JOIN invoices as i on i.customerid = c.customerid
+GROUP BY e.employeeid</sql><sql name="SQL 15">SELECT  FirstName, LastName 
+FROM employees
+WHERE Title = &quot;Sales Support Agent&quot;;</sql><sql name="SQL 16">SELECT BillingCountry, SUM(Total)
+FROM invoices
+GROUP BY BillingCountry;</sql><sql name="SQL 17">SELECT a.Name, COUNT(i.TrackId) AS &quot;Number Of Tickets&quot;
+FROM artists AS a, invoice_items AS i, tracks AS t, albums AS al
+WHERE i.TrackId = t.TrackId
+AND t.AlbumId == al.AlbumId
+AND al.ArtistId == a.ArtistId
+Group By a.Name
+ORDER BY COUNT(i.TrackId) desc
+LIMIT 3;
+</sql><sql name="SQL 18">SELECT al.Title, COUNT(i.TrackId) AS &quot;Number Of Tickets&quot;
+FROM artists AS a, invoice_items AS i, tracks AS t, albums AS al
+WHERE i.TrackId = t.TrackId
+AND t.AlbumId == al.AlbumId
+AND al.ArtistId == a.ArtistId
+Group By al.Title
+ORDER BY COUNT(i.TrackId) desc
+LIMIT 5;</sql><sql name="SQL 19">SELECT e.FirstName, e.LastName, SUM( i.Total)
+FROM employees AS e, invoices AS i, customers AS c 
+WHERE i.CustomerId = c.CustomerId
+AND c.SupportRepId = e.EmployeeId
+AND e.Title = &quot;Sales Support Agent&quot;
+AND i.InvoiceDate LIKE &quot;2009%&quot;
+GROUP BY e.FirstName
+order by SUM(i.Total) desc
+Limit 1;</sql><sql name="SQL 21">SELECT t.Name, COUNT(il.TrackId) AS &quot;Number of Tickets&quot; 
+FROM tracks AS t, invoice_items AS il, invoices AS i 
+WHERE il.TrackId == t.TrackId
+AND il.InvoiceId == i.InvoiceId
+AND i.InvoiceDate LIKE &quot;2013%&quot;
+GROUP BY t.Name
+ORDER BY COUNT(il.TrackId) desc
+Limit 1;</sql><sql name="SQL 22">SELECT e.FirstName, e.LastName
+FROM employees AS e
+JOIN customers AS c ON e.employeeid = c.supportrepid
+JOIN invoices as i on i.customerid = c.customerid
+group by e.employeeid
+ORDER BY sum(total) desc
+Limit 1;</sql><sql name="SQL 23">SELECT BillingCountry, SUM(Total)
+FROM invoices
+GROUP BY BillingCountry
+ORDER BY SUM(Total) desc
+LIMIT 1;</sql><sql name="SQL 24">SELECT m.Name AS &quot;Media Type&quot;, COUNT(i.TrackId) as &quot;Number of Tickets&quot;
+FROM media_types AS m, invoice_items AS i, tracks AS t
+WHERE i.TrackId == t.TrackId
+AND t.MediaTypeId == m.MediaTypeId
+Group By m.Name
+Order By COUNT(i.TrackId) desc
+Limit 1;</sql><sql name="SQL 25">SELECT COUNT(invoiceid)
+FROM invoices 
+WHERE invoicedate BETWEEN datetime(&quot;2009-01-01&quot;) AND datetime(&quot;2011-12-31&quot;);</sql><sql name="SQL 26">SELECT SUBSTR(InvoiceDate,0,5) AS &quot;Year&quot;, SUM(Total) AS &quot;Total&quot;
+FROM invoices
+WHERE InvoiceDate  LIKE &quot;2009%&quot; 
+OR InvoiceDate LIKE &quot;2010%&quot;
+OR InvoiceDate LIKE &quot;2011%&quot;
+GROUP BY SUBSTR(InvoiceDate,0,5);</sql><sql name="SQL 28">SELECT t.name,a.title AS &quot;Album name&quot; , g.name AS &quot;Genres&quot;, m.name AS &quot;Media tyoe&quot;
+FROM tracks AS t
+JOIN albums AS a ON a.albumid = t.albumid
+JOIN genres AS g ON g.genreid = t.genreid
+JOIN media_types AS m ON m.mediatypeid = t.mediatypeid</sql><current_tab id="25"/></tab_sql></sqlb_project>
